@@ -64,10 +64,65 @@ func AddTag(c *gin.Context) {
 
 //Modify tag
 func ModifyTag(c *gin.Context) {
+	id := com.StrTo(c.Query("id")).MustInt()
+	name := c.Query("name")
+	modifiedBy := c.Query("modified_by")
+	valid := validation.Validation{}
+	var state int = -1
+	if arg := c.Query("state"); arg != "" {
+		state = com.StrTo(arg).MustInt()
+		valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+	}
+	valid.Required(id, "id").Message("ID不能为空")
+	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
+	valid.MaxSize(name, 100, "name").Message("名称不得超过100个字符")
+	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
+
+	code := errCode.INVALID_PARAMS
+	if !valid.HasErrors() {
+		code = errCode.SUCCESS
+		if models.ExistTagById(id) {
+			data := make(map[string]interface{})
+			data["modified_by"] = modifiedBy
+			if name != "" {
+				data[name] = name
+			}
+			if state != -1 {
+				data["state"] = state
+			}
+			models.ModifyTag(id, data)
+		} else {
+			code = errCode.ERROR_NOT_EXIST_TAG
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  errCode.GetMsg(code),
+		"data": make(map[string]interface{}),
+	})
 
 }
 
 //delete tag
 func DeleteTag(c *gin.Context) {
+	id := com.StrTo(c.Param("id")).MustInt()
 
+	valid := validation.Validation{}
+	valid.Min(id, 1, "id").Message("ID必须大于0")
+
+	code := errCode.INVALID_PARAMS
+	if ! valid.HasErrors() {
+		code = errCode.SUCCESS
+		if models.ExistTagById(id) {
+			models.DeleteTag(id)
+		} else {
+			code = errCode.ERROR_NOT_EXIST_TAG
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  errCode.GetMsg(code),
+		"data": make(map[string]string),
+	})
 }
