@@ -61,25 +61,28 @@ func ModifyTag(id int, data interface{}) bool {
 
 //models callback
 //创建
-func (tag *Tag) BeforeCreate(scope gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
-	return nil
+func (tag *Tag) BeforeCreate(scope *gorm.Scope) (err error) {
+	//tx.Model(tag).Update("created_on",time.Now().Unix())
+	scope.SetColumn("created_on",time.Now().Unix())
+	return
 }
-//func (tag *Tag) AfterCreate(scope gorm.Scope) error {
+
+//func (tag *Tag) AfterCreate(scope *gorm.Scope) error {
 //	return nil
 //}
 
 //更新和创建的回调方法
-//func (tag *Tag) AfterSave(scope gorm.Scope) error {
+//func (tag *Tag) AfterSave(scope *gorm.Scope) error {
 //	return nil
 //}
-//func (tag *Tag) BeforeSave(scope gorm.Scope) error {
+//func (tag *Tag) BeforeSave(scope *gorm.Scope) error {
 //	return nil
 //}
 
 //更新的回调方法
-func (tag *Tag) BeforeUpdate(scope gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
+func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
+	scope.SetColumn("modified_on",time.Now().Unix())
+	//tx.Model(tag).Update("modified_on",time.Now().Unix())
 	return nil
 }
 //func (tag *Tag) AfterUpdate(scope gorm.Scope) error {
