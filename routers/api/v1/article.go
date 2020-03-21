@@ -183,7 +183,7 @@ func DeleteArticle(c *gin.Context) {
 			models.DeleteArticle(id)
 			code = errCode.SUCCESS
 		} else {
-			code = e.ERROR_NOT_EXIST_ARTICLE
+			code = errCode.ERROR_NOT_EXIST_ARTICLE
 		}
 	} else {
 		for _, err := range valid.Errors {
