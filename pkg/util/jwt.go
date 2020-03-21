@@ -2,7 +2,7 @@ package util
 
 import (
 	"blogWithGin/pkg/setting"
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"time"
 )
 

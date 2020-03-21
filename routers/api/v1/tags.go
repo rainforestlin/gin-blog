@@ -12,7 +12,14 @@ import (
 	"net/http"
 )
 
-//获得多个文章标签
+//获取文章标签
+//@Summary 获取文章标签
+//@security JWT
+//@Produce json
+//@Param name query string true "Name"
+//@param state query int false "State"
+//@success 200 {object} models.Tag  "{"code":200,"data":{"list":[],"total":20},"msg":"ok"}"
+//@router /api/v1/tags [get]
 func GetTags(c *gin.Context) {
 	name := c.Query("name")
 	maps := make(map[string]interface{})
@@ -37,6 +44,14 @@ func GetTags(c *gin.Context) {
 }
 
 //新增文章标签
+//@Summary 新增文章标签
+//@security JWT
+//@produce json
+//@param name query string true "Name"
+//@param state query int false "State"
+//@param created_by query string true "CreatedBy" "string valid" maxlength(100) minlength(1)
+//@success 200 {object} models.Tag  "{"code":200,"data":{},"msg":"ok"}"
+//@router /api/v1/tags [post]
 func AddTag(c *gin.Context) {
 	name := c.Query("name")
 	state := com.StrTo(c.DefaultQuery("state", "0")).MustInt()
@@ -69,6 +84,14 @@ func AddTag(c *gin.Context) {
 }
 
 //Modify tag
+//@Summary 修改文章标签
+//@security JWT
+//@produce json
+//@param id path int true "ID"
+//@param name query string true "Name"
+//@param modified_by query string true "ModifiedBy"
+//@success 200 {object} models.Tag  "{"code":200,"data":{},"msg":"ok"}"
+//@router /api/v1/tags/{id} [put]
 func ModifyTag(c *gin.Context) {
 	id := com.StrTo(c.Query("id")).MustInt()
 	name := c.Query("name")
@@ -115,6 +138,12 @@ func ModifyTag(c *gin.Context) {
 }
 
 //delete tag
+//@summary 删除文章标签
+//@security JWT
+//@produce json
+//@Param id path int true "ID" "int valid" mininum(1)
+//@success 200 {string} models.Tag  "{"code":200,"data":{},"msg":"ok"}"
+//@router /api/v1/tags/{id} [delete]
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt()
 

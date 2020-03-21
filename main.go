@@ -7,6 +7,16 @@ import (
 	"net/http"
 )
 
+// @title Swagger Example API
+// @version 1.0
+// @description 用gin框架搭建一个博客api.
+// @contact.name Julian Lee
+// @contact.email julianlee107@hotmail.com
+// @host localhost:8000
+// @BasePath /
+// @securitydefinitions.oauth2.application JWT
+// @scope.write Grants write access
+// @tokenUrl 127.0.0.1:8000/auth
 func main() {
 	//router := gin.Default()
 	//router.GET("/test", func(context *gin.Context) {
@@ -30,5 +40,5 @@ func main() {
 		BaseContext:       nil,
 		ConnContext:       nil,
 	}
-	server.ListenAndServe()
+	_ = server.ListenAndServe()
 }
