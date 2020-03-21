@@ -13,7 +13,7 @@ type Tag struct {
 }
 
 func GetTags(pageNum, pageSize int, maps interface{}) (tags []Tag) {
-	db.Model(&Tag{}).Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
+	db.Model(&Tag{}).Where(maps).Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&tags)
 	return
 }
 
@@ -63,7 +63,7 @@ func ModifyTag(id int, data interface{}) bool {
 //创建
 func (tag *Tag) BeforeCreate(scope *gorm.Scope) (err error) {
 	//tx.Model(tag).Update("created_on",time.Now().Unix())
-	scope.SetColumn("created_on",time.Now().Unix())
+	scope.SetColumn("created_on", time.Now().Unix())
 	return
 }
 
@@ -81,10 +81,11 @@ func (tag *Tag) BeforeCreate(scope *gorm.Scope) (err error) {
 
 //更新的回调方法
 func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("modified_on",time.Now().Unix())
+	scope.SetColumn("modified_on", time.Now().Unix())
 	//tx.Model(tag).Update("modified_on",time.Now().Unix())
 	return nil
 }
+
 //func (tag *Tag) AfterUpdate(scope gorm.Scope) error {
 //	return nil
 //}
