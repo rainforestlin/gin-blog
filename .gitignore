@@ -2,3 +2,4 @@
 .idea
 vendor/gopkg.in
 vendor
+runtimes/logs
