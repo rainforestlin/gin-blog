@@ -1,10 +1,16 @@
 package main
 
 import (
+	"blogWithGin/pkg/logging"
 	"blogWithGin/pkg/setting"
 	"blogWithGin/routers"
+	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 )
 
 // @title Swagger Example API
@@ -40,5 +46,22 @@ func main() {
 		BaseContext:       nil,
 		ConnContext:       nil,
 	}
-	_ = server.ListenAndServe()
+	//_ = server.ListenAndServe()
+	//	优雅地重启
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen:%s\n", err)
+		}
+	}()
+	//	等待中断信号来，并在5秒钟之后终止服务
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	logging.Info("Shutdown Server")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		logging.Info("Shutdown Server", err)
+	}
+	logging.Info("Server existing")
 }
