@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"blogWithGin/pkg/errCode"
+	"blogWithGin/pkg/logging"
 	"blogWithGin/pkg/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,7 +17,13 @@ func JWT() gin.HandlerFunc {
 		code = errCode.SUCCESS
 		token := context.Query("token")
 		if token == "" {
-			code = errCode.INVALID_PARAMS
+			token,err := context.Cookie("token")
+			if err != nil {
+				logging.Error(err)
+			}
+			if token == ""{
+				code = errCode.INVALID_PARAMS
+			}
 		} else {
 			claims, err := util.ParseToken(token)
 			if err != nil {
