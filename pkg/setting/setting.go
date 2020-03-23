@@ -15,9 +15,10 @@ var (
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 
-	PageSize  int
-	JwtSecret string
+	PageSize        int
+	JwtSecret       string
 	TokenExpireTime int
+	Domain          string
 )
 
 func init() {
@@ -53,4 +54,5 @@ func LoadApp() {
 	JwtSecret = sec.Key("JWT_SECRET").MustString("fajsdfljawe23")
 	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
 	TokenExpireTime = sec.Key("TOKEN_EXPIRE").MustInt(2)
+	Domain = sec.Key("Domain").MustString("localhost")
 }

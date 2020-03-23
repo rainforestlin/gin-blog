@@ -4,6 +4,7 @@ import (
 	"blogWithGin/models"
 	"blogWithGin/pkg/errCode"
 	"blogWithGin/pkg/logging"
+	"blogWithGin/pkg/setting"
 	"blogWithGin/pkg/util"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,7 @@ func GetAuth(c *gin.Context) {
 			} else {
 				data["token"] = token
 				code = errCode.SUCCESS
+				c.SetCookie("token", token, setting.TokenExpireTime*3600, "", setting.Domain, false, true)
 			}
 		} else {
 			code = errCode.ERROR_AUTH
