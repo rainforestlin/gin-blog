@@ -27,4 +27,6 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/gorm v1.20.8 // indirect
 )

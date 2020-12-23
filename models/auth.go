@@ -1,16 +1,14 @@
 package models
 
 type Auth struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Model
+	Username string `gorm:"type:varchar(20)" json:"username"`
+	Password string `gorm:"type:text" json:"password"`
+	Role     int    `gorm:"type:int" json:"role"`
 }
 
 func CheckAuth(username, password string) bool {
 	var auth Auth
 	db.Model(&Auth{}).Select("id").Where(Auth{Username: username, Password: password}).First(&auth)
-	if auth.ID > 0 {
-		return true
-	}
-	return false
+	return auth.ID > 0
 }
