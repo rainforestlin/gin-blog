@@ -1,4 +1,4 @@
-module blogWithGin
+module github.com/julianlee107/blogWithGin
 
 go 1.13
 

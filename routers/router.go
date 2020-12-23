@@ -1,43 +1,28 @@
 package routers
 
 import (
-	_ "blogWithGin/docs"
-	"blogWithGin/middleware/jwt"
-	"blogWithGin/pkg/setting"
-	v1 "blogWithGin/routers/api/v1"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/julianlee107/blogWithGin/conf"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 )
 
 func InitRouter() *gin.Engine {
-	r := gin.New()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
-	gin.SetMode(setting.RunMode)
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.POST("/auth", v1.GetAuth)
-	apiv1 := r.Group("api/v1")
-	apiv1.Use(jwt.JWT())
+	gin.SetMode(conf.RunMode)
+
+	r := gin.Default()
+	router := r.Group("/")
 	{
-		//get tags
-		apiv1.GET("/tags", v1.GetTags)
-		//add tag
-		apiv1.POST("/tags", v1.AddTag)
-		//modify specific tag
-		apiv1.PUT("/tags/:id", v1.ModifyTag)
-		//delete specific tag
-		apiv1.DELETE("/tags/:id", v1.DeleteTag)
-		//	get articles list
-		apiv1.GET("/articles", v1.GetArticles)
-		//	get specific article
-		apiv1.GET("/articles/:id", v1.GetArticle)
-		//	add a new article
-		apiv1.POST("/articles", v1.AddArticle)
-		//	update a specific article
-		apiv1.PUT("/articles/:id", v1.ModifyArticle)
-		//	delete a specific article
-		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
+		router.GET("/ping", func(context *gin.Context) {
+			context.JSON(http.StatusOK, gin.H{
+				"msg": "pong",
+			})
+		})
+		r.GET("/swagger/*any",ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
+	r.Run(fmt.Sprintf(":%d", conf.HttpPort))
 	return r
 }

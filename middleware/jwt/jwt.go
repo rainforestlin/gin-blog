@@ -1,12 +1,13 @@
 package jwt
 
 import (
-	"blogWithGin/pkg/errCode"
-	"blogWithGin/pkg/logging"
-	"blogWithGin/pkg/util"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/julianlee107/blogWithGin/pkg/errCode"
+	"github.com/julianlee107/blogWithGin/pkg/logging"
+	"github.com/julianlee107/blogWithGin/pkg/util"
 )
 
 func JWT() gin.HandlerFunc {
@@ -17,11 +18,11 @@ func JWT() gin.HandlerFunc {
 		code = errCode.SUCCESS
 		token := context.Query("token")
 		if token == "" {
-			token,err := context.Cookie("token")
+			token, err := context.Cookie("token")
 			if err != nil {
 				logging.Error(err)
 			}
-			if token == ""{
+			if token == "" {
 				code = errCode.INVALID_PARAMS
 			}
 		} else {

@@ -7,9 +7,9 @@ import (
 
 type Tag struct {
 	Model
-	Name      string `json:"name"`
-	CreatedBy string `json:"created_by"`
-	State     int    `json:"state"`
+	Name      string `gorm:"type:varchar(20);not null" json:"name"`
+	CreatedBy string `gorm:"type:varchar(20);not null" json:"created_by"`
+	State     int    `gorm:"type:int" json:"state"`
 }
 
 func GetTags(pageNum, pageSize int, maps interface{}) (tags []Tag) {

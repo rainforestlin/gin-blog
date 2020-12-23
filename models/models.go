@@ -1,11 +1,12 @@
 package models
 
 import (
-	"blogWithGin/pkg/setting"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"github.com/julianlee107/blogWithGin/conf"
 	"log"
+	"time"
 )
 
 //初始化model
@@ -13,6 +14,7 @@ import (
 var db *gorm.DB
 
 type Model struct {
+	gorm.Model
 	ID         int `gorm:"primary_key" json:"id"`
 	CreatedOn  int `json:"created_on"`
 	ModifiedOn int `json:"modified_on"`
@@ -23,16 +25,12 @@ func init() {
 		err                                               error
 		dbType, dbName, user, password, host, tablePrefix string
 	)
-	sec, err := setting.Cfg.GetSection("database")
-	if err != nil {
-		log.Fatalf("Fail to get section 'database': %v", err)
-	}
-	dbType = sec.Key("TYPE").String()
-	dbName = sec.Key("NAME").String()
-	user = sec.Key("USER").String()
-	password = sec.Key("PASSWORD").String()
-	host = sec.Key("HOST").String()
-	tablePrefix = sec.Key("TABLE_PREFIX").String()
+	dbType = conf.DbType
+	dbName = conf.DbName
+	user = conf.DbUser
+	password = conf.DbHost
+	host = conf.DbHost
+	tablePrefix = conf.DbTablePrefix
 	db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		user,
 		password,
@@ -44,12 +42,23 @@ func init() {
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return tablePrefix + defaultTableName
 	}
+	// 禁止默认表明的复数属形式
 	db.SingularTable(true)
 	db.LogMode(true)
+	// 设置连接池中最大闲置连接数
 	db.DB().SetMaxIdleConns(10)
+	// 设置连接池中最大连接数
 	db.DB().SetMaxOpenConns(100)
+	// 设置连接的最大可复用时间
+	db.DB().SetConnMaxLifetime(10*time.Second)
+	// gorm与表自动同步
+	db.AutoMigrate()
 }
 
 func CloseDB() {
 	defer db.Close()
+}
+
+func GetDB() *gorm.DB  {
+	return db
 }

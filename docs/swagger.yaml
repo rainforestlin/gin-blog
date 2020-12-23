@@ -1,128 +1,16 @@
 basePath: /
-definitions:
-  models.Tag:
-    properties:
-      created_by:
-        type: string
-      created_on:
-        type: integer
-      id:
-        type: integer
-      modified_on:
-        type: integer
-      name:
-        type: string
-      state:
-        type: integer
-    type: object
 host: localhost:8000
 info:
   contact:
     email: julianlee107@hotmail.com
     name: Julian Lee
   description: 用gin框架搭建一个博客api.
-  license: {}
   title: Swagger Example API
   version: "1.0"
-paths:
-  /api/v1/tags:
-    get:
-      parameters:
-      - description: Name
-        in: query
-        name: name
-        required: true
-        type: string
-      - description: State
-        in: query
-        name: state
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"code":200,"data":{"list":[],"total":20},"msg":"ok"}'
-          schema:
-            $ref: '#/definitions/models.Tag'
-      security:
-      - JWT: []
-      summary: 获取文章标签
-    post:
-      parameters:
-      - description: Name
-        in: query
-        name: name
-        required: true
-        type: string
-      - description: State
-        in: query
-        name: state
-        type: integer
-      - description: CreatedBy
-        in: query
-        maxLength: 100
-        minLength: 1
-        name: created_by
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"code":200,"data":{},"msg":"ok"}'
-          schema:
-            $ref: '#/definitions/models.Tag'
-      security:
-      - JWT: []
-      summary: 新增文章标签
-  /api/v1/tags/{id}:
-    delete:
-      parameters:
-      - description: ID
-        in: path
-        minimum: 1
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"code":200,"data":{},"msg":"ok"}'
-          schema:
-            type: string
-      security:
-      - JWT: []
-      summary: 删除文章标签
-    put:
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Name
-        in: query
-        name: name
-        required: true
-        type: string
-      - description: ModifiedBy
-        in: query
-        name: modified_by
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"code":200,"data":{},"msg":"ok"}'
-          schema:
-            $ref: '#/definitions/models.Tag'
-      security:
-      - JWT: []
-      summary: 修改文章标签
+paths: {}
 securityDefinitions:
   JWT:
+    authorizationUrl: ""
     flow: application
     scopes:
       write: ' Grants write access'

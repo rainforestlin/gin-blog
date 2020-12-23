@@ -1,9 +1,6 @@
 package main
 
 import (
-	"blogWithGin/pkg/logging"
-	"blogWithGin/pkg/setting"
-	"blogWithGin/routers"
 	"context"
 	"fmt"
 	"log"
@@ -12,6 +9,11 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/julianlee107/blogWithGin/conf"
+	"github.com/julianlee107/blogWithGin/pkg/logging"
+	"github.com/julianlee107/blogWithGin/routers"
 )
 
 // @title Swagger Example API
@@ -25,20 +27,20 @@ import (
 // @scope.write Grants write access
 // @tokenUrl 127.0.0.1:8000/auth
 func main() {
-	//router := gin.Default()
-	//router.GET("/test", func(context *gin.Context) {
-	//	context.JSON(http.StatusOK, gin.H{
-	//		"message": "test",
-	//	})
-	//})
-	router := routers.InitRouter()
+	router := gin.Default()
+	router.GET("/test", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"message": "test",
+		})
+	})
+	router = routers.InitRouter()
 	server := &http.Server{
-		Addr:              fmt.Sprintf(":%d", setting.HTTPPort),
+		Addr:              fmt.Sprintf(":%d", conf.HttpPort),
 		Handler:           router,
 		TLSConfig:         nil,
-		ReadTimeout:       setting.ReadTimeout,
+		ReadTimeout:       time.Duration(conf.ReadTimeout),
 		ReadHeaderTimeout: 0,
-		WriteTimeout:      setting.WriteTimeout,
+		WriteTimeout:      time.Duration(conf.WriteTimeout),
 		IdleTimeout:       0,
 		MaxHeaderBytes:    1 << 20,
 		TLSNextProto:      nil,

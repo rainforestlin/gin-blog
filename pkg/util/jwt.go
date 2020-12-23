@@ -1,12 +1,13 @@
 package util
 
 import (
-	"blogWithGin/pkg/setting"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/julianlee107/blogWithGin/conf"
 )
 
-var jwtSecret = []byte(setting.JwtSecret)
+var jwtSecret = []byte(conf.JWTSecret)
 
 type Claims struct {
 	Username string `json:"username"`
@@ -16,7 +17,7 @@ type Claims struct {
 
 func GenerateToken(username, password string) (string, error) {
 	nowTime := time.Now()
-	expireTime := nowTime.Add(time.Duration(setting.TokenExpireTime) * time.Hour)
+	expireTime := nowTime.Add(time.Duration(conf.TokenExpire) * time.Hour)
 	claims := Claims{
 		Username: username,
 		Password: password,
