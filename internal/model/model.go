@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/julianlee107/blogWithGin/pkg/setting"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

@@ -6,8 +6,10 @@ import (
 
 	"github.com/julianlee107/blogWithGin/global"
 	"github.com/julianlee107/blogWithGin/internal/model"
-	"github.com/julianlee107/blogWithGin/internal/routers"
+	"github.com/julianlee107/blogWithGin/pkg/logger"
 	"github.com/julianlee107/blogWithGin/pkg/setting"
+	"github.com/julianlee107/blogWithGin/internal/routers"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
@@ -20,6 +22,7 @@ func main() {
 		WriteTimeout:   10 * global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
+	global.Logger.Info("%s: 冲冲冲 %s", "Julian", "blog_service")
 	service.ListenAndServe()
 }
 
@@ -53,10 +56,25 @@ func setupDBEngine() error {
 	return nil
 }
 
+func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	global.Logger = logger.NewLogger(&lumberjack.Logger{
+		Filename:  fileName,
+		MaxSize:   600,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
+	return nil
+}
+
 func init() {
 	err := setupSetting()
 	if err != nil {
 		log.Fatalf("init.setupSetting err:%v", err)
+	}
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("init.setupLogger err:%v", err)
 	}
 	err = setupDBEngine()
 
