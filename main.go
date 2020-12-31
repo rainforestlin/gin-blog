@@ -22,7 +22,6 @@ func main() {
 		WriteTimeout:   10 * global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
-	global.Logger.Info("%s: 冲冲冲 %s", "Julian", "blog_service")
 	service.ListenAndServe()
 }
 
