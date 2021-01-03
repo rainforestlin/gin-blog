@@ -1,28 +1,56 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/julianlee107/blogWithGin/global"
 	"github.com/julianlee107/blogWithGin/internal/model"
+	"github.com/julianlee107/blogWithGin/internal/routers"
 	"github.com/julianlee107/blogWithGin/pkg/logger"
 	"github.com/julianlee107/blogWithGin/pkg/setting"
-	"github.com/julianlee107/blogWithGin/internal/routers"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+// @title 博客系统
+// @version 2.0
+// @description Golang
+// @termsOfService https://github.com/julianlee107/gin-blog
 func main() {
+	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
-
-	service := http.Server{
+	s := &http.Server{
 		Addr:           ":" + global.ServerSetting.HttpPort,
 		Handler:        router,
-		ReadTimeout:    10 * global.ServerSetting.ReadTimeout,
-		WriteTimeout:   10 * global.ServerSetting.WriteTimeout,
+		ReadTimeout:    global.ServerSetting.ReadTimeout,
+		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
-	service.ListenAndServe()
+
+	go func() {
+		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("s.ListenAndServe err: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal,1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shuting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := s.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown:", err)
+	}
+
+	log.Println("Server exiting")
 }
 
 func setupSetting() error {
