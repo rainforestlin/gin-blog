@@ -38,8 +38,7 @@ func main() {
 			log.Fatalf("s.ListenAndServe err: %v", err)
 		}
 	}()
-
-	quit := make(chan os.Signal,1)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shuting down server...")
@@ -70,7 +69,8 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
-
+	global.ServerSetting.ReadTimeout *= time.Second
+	global.ServerSetting.WriteTimeout *= time.Second
 	return nil
 }
 
