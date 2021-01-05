@@ -9,6 +9,7 @@ import (
 	// "github.com/julianlee107/blogWithGin/global"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/julianlee107/blogWithGin/internal/middleware"
 )
 
 func NewRouter() *gin.Engine {
@@ -16,6 +17,7 @@ func NewRouter() *gin.Engine {
 
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	r.Use(middleware.Translations())
 	r.GET("/ping",func(ctx *gin.Context){
 		ctx.JSON(http.StatusOK,gin.H{
 			"data":"pong",
