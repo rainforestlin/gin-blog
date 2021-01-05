@@ -3,7 +3,7 @@
     "info": {
         "description": "Golang",
         "title": "博客系统",
-        "termsOfService": "https://github.com/julianlee107@gin-blog",
+        "termsOfService": "https://github.com/julianlee107/gin-blog",
         "contact": {},
         "version": "2.0"
     },
@@ -48,7 +48,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Article"
+                                "$ref": "#/definitions/model.ArticleSwagger"
                             }
                         }
                     },
@@ -323,7 +323,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Article"
+                                "$ref": "#/definitions/model.TagSwagger"
                             }
                         }
                     },
@@ -535,6 +535,20 @@
         }
     },
     "definitions": {
+        "app.Pager": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total_rows": {
+                    "type": "integer"
+                }
+            }
+        },
         "errcode.Error": {
             "type": "object"
         },
@@ -579,6 +593,20 @@
                 }
             }
         },
+        "model.ArticleSwagger": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Article"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
+                }
+            }
+        },
         "model.Tag": {
             "type": "object",
             "properties": {
@@ -608,6 +636,20 @@
                 },
                 "state": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.TagSwagger": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
                 }
             }
         }

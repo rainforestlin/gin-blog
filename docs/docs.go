@@ -18,7 +18,7 @@ var doc = `{
     "info": {
         "description": "{{.Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "https://github.com/julianlee107@gin-blog",
+        "termsOfService": "https://github.com/julianlee107/gin-blog",
         "contact": {},
         "version": "{{.Version}}"
     },
@@ -65,7 +65,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Article"
+                                "$ref": "#/definitions/model.ArticleSwagger"
                             }
                         }
                     },
@@ -340,7 +340,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Article"
+                                "$ref": "#/definitions/model.TagSwagger"
                             }
                         }
                     },
@@ -552,6 +552,20 @@ var doc = `{
         }
     },
     "definitions": {
+        "app.Pager": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total_rows": {
+                    "type": "integer"
+                }
+            }
+        },
         "errcode.Error": {
             "type": "object"
         },
@@ -596,6 +610,20 @@ var doc = `{
                 }
             }
         },
+        "model.ArticleSwagger": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Article"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
+                }
+            }
+        },
         "model.Tag": {
             "type": "object",
             "properties": {
@@ -625,6 +653,20 @@ var doc = `{
                 },
                 "state": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.TagSwagger": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
                 }
             }
         }
