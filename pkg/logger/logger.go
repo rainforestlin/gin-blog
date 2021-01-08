@@ -153,7 +153,6 @@ func (l *Logger) Output(level Level, message string) {
 func (l *Logger) Info(v ...interface{}) {
 	l.Output(LevelInfo, fmt.Sprint(v...))
 }
-
 func (l *Logger) Debug(v ...interface{}) {
 	l.Output(LevelDebug, fmt.Sprint(v...))
 }

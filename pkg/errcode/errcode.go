@@ -6,9 +6,9 @@ import (
 )
 
 type Error struct {
-	code    int      
-	msg     string   
-	details []string 
+	code    int
+	msg     string
+	details []string
 }
 
 var codes map[int]string
@@ -38,6 +38,13 @@ func (e *Error) Msg() string {
 
 func (e *Error) Details() []string {
 	return e.details
+}
+
+func (e *Error) WithDetails(details ...string) *Error {
+	newError := *e
+	newError.details = []string{}
+	newError.details = append(newError.details, details...)
+	return &newError
 }
 
 func (e *Error) StatusCode() int {
