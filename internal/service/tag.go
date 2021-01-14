@@ -10,9 +10,14 @@ type CountTagRequest struct {
 	State uint8  `form:"state default=1" binding:"oneof=0 1"`
 }
 
+type GetTagRequest struct{
+	ID uint32 `path:""`
+}
+
 type TagListRequest struct {
-	Name  string `form:"name" binding:"max=100"`
-	State uint8  `form:"state default=1" binding:"oneof=0 1"`
+	Name string `form:"name" binding:"max=100"`
+	// 必须是0或1，如果不是默认为1
+	State uint8 `form:"state default=1" binding:"oneof=0 1"`
 }
 
 type CreateTagRequest struct {

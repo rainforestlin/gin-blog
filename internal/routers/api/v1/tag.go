@@ -22,7 +22,7 @@ func NewTag() Tag {
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags/{id} [get]
 func (t Tag) Get(c *gin.Context) {
-
+	
 }
 
 // @Summary 获取多个标签
