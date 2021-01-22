@@ -10,18 +10,26 @@ definitions:
     type: object
   errcode.Error:
     type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
   model.Article:
     properties:
       content:
         type: string
       cover_image_url:
         type: string
+      created_at:
+        type: string
       created_by:
         type: string
-      created_on:
-        type: integer
-      deleted_on:
-        type: integer
+      deleted:
+        $ref: '#/definitions/gorm.DeletedAt'
       desc:
         type: string
       id:
@@ -30,11 +38,11 @@ definitions:
         type: integer
       modified_by:
         type: string
-      modified_on:
-        type: integer
       state:
         type: integer
       title:
+        type: string
+      updated_at:
         type: string
     type: object
   model.ArticleSwagger:
@@ -48,24 +56,24 @@ definitions:
     type: object
   model.Tag:
     properties:
+      created_at:
+        type: string
       created_by:
         type: string
-      created_on:
-        type: integer
-      deleted_on:
-        type: integer
+      deleted:
+        $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
       is_del:
         type: integer
       modified_by:
         type: string
-      modified_on:
-        type: integer
       name:
         type: string
       state:
         type: integer
+      updated_at:
+        type: string
     type: object
   model.TagSwagger:
     properties:
@@ -83,7 +91,54 @@ info:
   title: 博客系统
   version: "2.0"
 paths:
-  /api/v1/article:
+  /api/v1/article/{id}:
+    delete:
+      parameters:
+      - description: 标签id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 删除单篇文章
+    get:
+      parameters:
+      - description: 标签id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 获取单篇文章
+  /api/v1/articles:
     get:
       parameters:
       - description: 文章标题
@@ -170,6 +225,7 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: 新增文章
+  /api/v1/articles/{id}:
     put:
       parameters:
       - description: 文章标题
@@ -218,53 +274,6 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: 修改文章
-  /api/v1/article/{id}:
-    delete:
-      parameters:
-      - description: 标签id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 成功
-          schema:
-            $ref: '#/definitions/model.Article'
-        "400":
-          description: 请求错误
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: 请求错误
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      summary: 删除单篇文章
-    get:
-      parameters:
-      - description: 标签id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 成功
-          schema:
-            $ref: '#/definitions/model.Article'
-        "400":
-          description: 请求错误
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: 请求错误
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      summary: 获取单篇文章
   /api/v1/tags:
     get:
       parameters:
