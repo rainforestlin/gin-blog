@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/julianlee107/blogWithGin/global"
 	"github.com/julianlee107/blogWithGin/pkg/app"
 	"gorm.io/gorm"
 )
@@ -37,8 +38,9 @@ func (t Tag) Count(db *gorm.DB) (int64, error) {
 
 func (t Tag) Get(db *gorm.DB) (*Tag, error) {
 	var tag *Tag
-	err := db.Where("id = ? AND state = ? AND is_del = ?", tag.ID, tag.State, 0).First(&tag).Error
+	err := db.Where("id = ? AND state = ? AND is_del = ?", t.ID, t.State, 0).First(&tag).Error
 	if err != nil {
+		global.Logger.Error("model.Tag.Get err:", t.ID, t.State)
 		return &Tag{}, err
 	}
 	return tag, nil
@@ -66,9 +68,12 @@ func (t Tag) Create(db *gorm.DB) error {
 	return db.Create(&t).Error
 }
 
-func (t Tag) Update(db *gorm.DB) error {
-	db = db.Model(&Tag{}).Where("id = ? AND is_del = ?", t.ID, 0)
-	return db.Updates(t).Error
+func (t Tag) Update(db *gorm.DB, values interface{}) error {
+	err := db.Model(t).Where("id = ? AND is_del = ?", t.ID, 0).Updates(values).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (t Tag) Delete(db *gorm.DB) error {

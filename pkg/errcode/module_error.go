@@ -1,6 +1,7 @@
 package errcode
 
 var (
+	ErrorGetTagFail     = NewError(20010000, "获取标签失败")
 	ErrorGetTagListFail = NewError(20010001, "获取标签列表失败")
 	ErrorCreateTagFail  = NewError(20010002, "创建标签失败")
 	ErrorUpdateTagFail  = NewError(20010003, "更新标签失败")

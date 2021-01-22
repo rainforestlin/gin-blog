@@ -5,6 +5,7 @@ import (
 	"github.com/julianlee107/blogWithGin/global"
 	"github.com/julianlee107/blogWithGin/internal/service"
 	"github.com/julianlee107/blogWithGin/pkg/app"
+	"github.com/julianlee107/blogWithGin/pkg/convert"
 	"github.com/julianlee107/blogWithGin/pkg/errcode"
 )
 
@@ -22,7 +23,29 @@ func NewTag() Tag {
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags/{id} [get]
 func (t Tag) Get(c *gin.Context) {
-	
+	param := service.GetTagRequest{
+		ID: convert.StrTo(c.Param("id")).MustUint32(),
+	}
+
+	response := app.NewResponse(c)
+
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Error("app.BindAndValid err: ", errs)
+		errResp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errResp)
+		return
+	}
+	svc := service.New(c.Request.Context())
+
+	tag, err := svc.GetSingleTag(&param)
+
+	if err != nil {
+		global.Logger.Error("svc.GetSingleTag err: ", errs)
+		response.ToErrorResponse(errcode.ErrorGetTagFail)
+		return
+	}
+	response.ToResponse(tag)
 }
 
 // @Summary 获取多个标签
@@ -54,17 +77,17 @@ func (t Tag) List(c *gin.Context) {
 	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
 
 	if err != nil {
-		global.Logger.Error("app.BindAndValid err: ", errs)
+		global.Logger.Error("app.CountTag err: ", errs)
 		response.ToErrorResponse(errcode.ErrorCountTagFail)
 		return
 	}
 	tags, err := svc.GetTagList(&param, &pager)
 	if err != nil {
-		global.Logger.Error("app.BindAndValid err: ", errs)
+		global.Logger.Error("svc.GetTagList err: ", errs)
 		response.ToErrorResponse(errcode.ErrorGetTagListFail)
 		return
 	}
-	response.ToResponseList(tags,totalRows)
+	response.ToResponseList(tags, totalRows)
 }
 
 // @Summary 新增标签
@@ -76,7 +99,30 @@ func (t Tag) List(c *gin.Context) {
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags [post]
-func (t Tag) Create(c *gin.Context) {}
+func (t Tag) Create(c *gin.Context) {
+	param := service.CreateTagRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Error("app.BindAndValid err: ", errs)
+		errResp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errResp)
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.CreateTag(&param)
+
+	if err != nil {
+		global.Logger.Error("svc.CreateTag err:", err)
+		response.ToErrorResponse(errcode.ErrorCreateTagFail)
+		return
+	}
+	response.ToResponse(gin.H{
+		"msg": "创建成功",
+	})
+	return
+}
 
 // @Summary 更改标签
 // @Pruduce json
@@ -88,7 +134,8 @@ func (t Tag) Create(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags/{id} [put]
-func (t Tag) Update(c *gin.Context) {}
+func (t Tag) Update(c *gin.Context) {
+}
 
 // @Summary 删除标签
 // @Produce json

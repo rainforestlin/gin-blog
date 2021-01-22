@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julianlee107/blogWithGin/pkg/setting"
@@ -17,13 +18,13 @@ const (
 )
 
 type Model struct {
-	ID         uint32 `gorm:"primary_key" json:"id"`
-	CreatedOn  uint32 `json:"created_on"`
-	CreatedBy  string `json:"created_by"`
-	ModifiedOn uint32 `json:"modified_on"`
-	ModifiedBy string `json:"modified_by"`
-	DeletedOn  uint32 `json:"deleted_on"`
-	IsDel      uint8  `json:"is_del"`
+	ID         uint32         `gorm:"primary_key" json:"id"`
+	CreatedAt  time.Time      `json:"created_at"`
+	CreatedBy  string         `json:"created_by"`
+	UpdatedAt  time.Time      `json:"updated_at"`
+	ModifiedBy string         `json:"modified_by"`
+	Deleted    gorm.DeletedAt `json:"deleted"`
+	IsDel      uint8          `json:"is_del"`
 }
 
 func NewDBEngine(databaseSetting *setting.DatabaseSetting) (*gorm.DB, error) {
