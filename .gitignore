@@ -1,3 +1,6 @@
 storage/logs/app.log
 tmp/build-errors.log
-docs/
+docs/docs.go
+docs/swagger.json
+docs/swagger.yaml
+tmp/main
