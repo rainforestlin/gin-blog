@@ -5,11 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/julianlee107/blogWithGin/docs"
-	"github.com/julianlee107/blogWithGin/internal/routers/api/v1"
+	v1 "github.com/julianlee107/blogWithGin/internal/routers/api/v1"
+
 	// "github.com/julianlee107/blogWithGin/global"
+	"github.com/julianlee107/blogWithGin/internal/middleware"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"github.com/julianlee107/blogWithGin/internal/middleware"
 )
 
 func NewRouter() *gin.Engine {
@@ -18,16 +19,20 @@ func NewRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middleware.Translations())
-	r.GET("/ping",func(ctx *gin.Context){
-		ctx.JSON(http.StatusOK,gin.H{
-			"data":"pong",
+	r.GET("/ping", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"data": "pong",
 		})
 	})
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	tag := v1.NewTag()
-	article := v1.NewArticle()
+
+	upload := NewUpload()
+	r.POST("/upload/file", upload.UploadFile)
+
 	apiv1 := r.Group("/api/v1")
 	{
+		tag := v1.NewTag()
+		article := v1.NewArticle()
 		apiv1.POST("/tags", tag.Create)
 		apiv1.DELETE("/tags/:id", tag.Delete)
 		apiv1.PUT("/tags/:id", tag.Update)
