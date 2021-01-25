@@ -1,1 +1,3 @@
 storage/logs/app.log
+tmp/build-errors.log
+docs/

@@ -15,6 +15,16 @@ type Upload struct{}
 func NewUpload() Upload {
 	return Upload{}
 }
+
+// @Summary 上传文件
+// @Pruduce json
+// @Accept  multipart/form-data
+// @Param file formData file true "上传文件"
+// @Param type formData string true "文件类型"
+// @Success 200 {string} string  "成功"
+// @Failure 400 {object} errcode.Error "请求错误"
+// @Failure 500 {object} errcode.Error "请求错误"
+// @Router /upload/file [post]
 func (u Upload) UploadFile(c *gin.Context) {
 	response := app.NewResponse(c)
 	file, fileHeader, err := c.Request.FormFile("file")

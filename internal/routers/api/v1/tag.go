@@ -92,19 +92,20 @@ func (t Tag) List(c *gin.Context) {
 
 // @Summary 新增标签
 // @Pruduce json
-// @Param name body string true "标签名称" minlength(1) maxlength(100)
-// @Param state body int false "状态" Emums(0,1) default(1)
-// @Param modified_by body string true "创建者" minlength(1) maxlength(100)
+// @Param tag body service.CreateTagRequest true "标签"
 // @Success 200 {object} model.Tag "成功"
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags [post]
 func (t Tag) Create(c *gin.Context) {
-	param := service.CreateTagRequest{}
+	param := service.CreateTagRequest{
+		CreatedBy: c.PostForm("created_by"),
+	}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
 		global.Logger.Error("app.BindAndValid err: ", errs)
+		global.Logger.Debug("param:", param, " created_by:", c.PostForm("created_by"))
 		errResp := errcode.InvalidParams.WithDetails(errs.Errors()...)
 		response.ToErrorResponse(errResp)
 		return
@@ -121,20 +122,35 @@ func (t Tag) Create(c *gin.Context) {
 	response.ToResponse(gin.H{
 		"msg": "创建成功",
 	})
-	return
 }
 
 // @Summary 更改标签
 // @Pruduce json
 // @Param id path int true "标签ID"
-// @Param name body string true "标签名称" minlength(1) maxlength(100)
-// @Param state body int false "状态" Emums(0,1) default(1)
-// @Param created_by body string true "创建者" minlength(1) maxlength(100)
+// @Param tag body service.UpdateTagRequest true "标签"
 // @Success 200 {object} model.Tag "成功"
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags/{id} [put]
 func (t Tag) Update(c *gin.Context) {
+	param := service.UpdateTagRequest{ID: convert.StrTo(c.Param("id")).MustUint32()}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Error("app.BindAndValid errs:", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.UpdateTag(&param)
+	if err != nil {
+		global.Logger.Error("svc.UpdateTag err: ", err)
+		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
+		return
+	}
+
+	response.ToResponse(gin.H{})
 }
 
 // @Summary 删除标签

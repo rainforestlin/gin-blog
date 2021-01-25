@@ -75,11 +75,7 @@ func (a Article) List(c *gin.Context) {
 
 // @Summary 新增文章
 // @Pruduce json
-// @Param title body string true "文章标题" minlength(1) maxlength(100)
-// @Param state body int false "状态" Emums(0,1) default(1)
-// @Param desc body string false "文章简介"
-// @Param content body string false "文章内容"
-// @Param created_by body string true "创建者" minlength(1) maxlength(100)
+// @Param article body service.CreateArticleRequest true "文章"
 // @Success 200 {object} model.Article "成功"
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
@@ -105,11 +101,8 @@ func (a Article) Create(c *gin.Context) {
 
 // @Summary 修改文章
 // @Pruduce json
-// @Param title body string true "文章标题" minlength(1) maxlength(100)
-// @Param state body int false "状态" Emums(0,1) default(1)
-// @Param desc body string false "文章简介"
-// @Param content body string false "文章内容"
-// @Param modified_by body string true "创建者" minlength(1) maxlength(100)
+// @Param id path int true "文章ID"
+// @Param article body service.UpdateArticleRequest true "文章"
 // @Success 200 {object} model.Article "成功"
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
