@@ -84,6 +84,80 @@ definitions:
       pager:
         $ref: '#/definitions/app.Pager'
     type: object
+  service.CreateArticleRequest:
+    properties:
+      content:
+        type: string
+      coverImageUrl:
+        type: string
+      createdBy:
+        type: string
+      desc:
+        type: string
+      state:
+        type: integer
+      tagID:
+        type: integer
+      title:
+        type: string
+    required:
+    - content
+    - coverImageUrl
+    - createdBy
+    - desc
+    - tagID
+    - title
+    type: object
+  service.CreateTagRequest:
+    properties:
+      createdBy:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    required:
+    - createdBy
+    - name
+    type: object
+  service.UpdateArticleRequest:
+    properties:
+      content:
+        type: string
+      coverImageUrl:
+        type: string
+      desc:
+        type: string
+      id:
+        type: integer
+      modifiedBy:
+        type: string
+      state:
+        type: integer
+      tagID:
+        type: integer
+      title:
+        type: string
+    required:
+    - id
+    - modifiedBy
+    - tagID
+    type: object
+  service.UpdateTagRequest:
+    properties:
+      id:
+        type: integer
+      modifiedBy:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    required:
+    - id
+    - modifiedBy
+    - name
+    type: object
 info:
   contact: {}
   description: Golang
@@ -179,38 +253,12 @@ paths:
       summary: 获取多篇文章
     post:
       parameters:
-      - description: 文章标题
+      - description: 文章
         in: body
-        maxLength: 100
-        minLength: 1
-        name: title
+        name: article
         required: true
         schema:
-          type: string
-      - default: 1
-        description: 状态
-        in: body
-        name: state
-        schema:
-          type: integer
-      - description: 文章简介
-        in: body
-        name: desc
-        schema:
-          type: string
-      - description: 文章内容
-        in: body
-        name: content
-        schema:
-          type: string
-      - description: 创建者
-        in: body
-        maxLength: 100
-        minLength: 1
-        name: created_by
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/service.CreateArticleRequest'
       responses:
         "200":
           description: 成功
@@ -228,38 +276,17 @@ paths:
   /api/v1/articles/{id}:
     put:
       parameters:
-      - description: 文章标题
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文章
         in: body
-        maxLength: 100
-        minLength: 1
-        name: title
+        name: article
         required: true
         schema:
-          type: string
-      - default: 1
-        description: 状态
-        in: body
-        name: state
-        schema:
-          type: integer
-      - description: 文章简介
-        in: body
-        name: desc
-        schema:
-          type: string
-      - description: 文章内容
-        in: body
-        name: content
-        schema:
-          type: string
-      - description: 创建者
-        in: body
-        maxLength: 100
-        minLength: 1
-        name: modified_by
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/service.UpdateArticleRequest'
       responses:
         "200":
           description: 成功
@@ -315,28 +342,12 @@ paths:
       summary: 获取多个标签
     post:
       parameters:
-      - description: 标签名称
+      - description: 标签
         in: body
-        maxLength: 100
-        minLength: 1
-        name: name
+        name: tag
         required: true
         schema:
-          type: string
-      - default: 1
-        description: 状态
-        in: body
-        name: state
-        schema:
-          type: integer
-      - description: 创建者
-        in: body
-        maxLength: 100
-        minLength: 1
-        name: modified_by
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/service.CreateTagRequest'
       responses:
         "200":
           description: 成功
@@ -405,28 +416,12 @@ paths:
         name: id
         required: true
         type: integer
-      - description: 标签名称
+      - description: 标签
         in: body
-        maxLength: 100
-        minLength: 1
-        name: name
+        name: tag
         required: true
         schema:
-          type: string
-      - default: 1
-        description: 状态
-        in: body
-        name: state
-        schema:
-          type: integer
-      - description: 创建者
-        in: body
-        maxLength: 100
-        minLength: 1
-        name: created_by
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/service.UpdateTagRequest'
       responses:
         "200":
           description: 成功
@@ -441,4 +436,33 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: 更改标签
+  /upload/file:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 上传文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 文件类型
+        in: formData
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: 上传文件
 swagger: "2.0"

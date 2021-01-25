@@ -159,50 +159,12 @@ var doc = `{
                 "summary": "新增文章",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "文章标题",
-                        "name": "title",
+                        "description": "文章",
+                        "name": "article",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "default": 1,
-                        "description": "状态",
-                        "name": "state",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "文章简介",
-                        "name": "desc",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "文章内容",
-                        "name": "content",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "创建者",
-                        "name": "created_by",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/service.CreateArticleRequest"
                         }
                     }
                 ],
@@ -233,50 +195,19 @@ var doc = `{
                 "summary": "修改文章",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "文章标题",
-                        "name": "title",
+                        "type": "integer",
+                        "description": "文章ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "文章",
+                        "name": "article",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "default": 1,
-                        "description": "状态",
-                        "name": "state",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "文章简介",
-                        "name": "desc",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "文章内容",
-                        "name": "content",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "创建者",
-                        "name": "modified_by",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/service.UpdateArticleRequest"
                         }
                     }
                 ],
@@ -364,34 +295,12 @@ var doc = `{
                 "summary": "新增标签",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "标签名称",
-                        "name": "name",
+                        "description": "标签",
+                        "name": "tag",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "default": 1,
-                        "description": "状态",
-                        "name": "state",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "创建者",
-                        "name": "modified_by",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/service.CreateTagRequest"
                         }
                     }
                 ],
@@ -464,34 +373,12 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "标签名称",
-                        "name": "name",
+                        "description": "标签",
+                        "name": "tag",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "default": 1,
-                        "description": "状态",
-                        "name": "state",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 1,
-                        "description": "创建者",
-                        "name": "created_by",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/service.UpdateTagRequest"
                         }
                     }
                 ],
@@ -527,6 +414,50 @@ var doc = `{
                         "description": "标签ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "请求错误",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/upload/file": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "summary": "上传文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文件类型",
+                        "name": "type",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -681,6 +612,114 @@ var doc = `{
                 },
                 "pager": {
                     "$ref": "#/definitions/app.Pager"
+                }
+            }
+        },
+        "service.CreateArticleRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "coverImageUrl",
+                "createdBy",
+                "desc",
+                "tagID",
+                "title"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "coverImageUrl": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
+                },
+                "tagID": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.CreateTagRequest": {
+            "type": "object",
+            "required": [
+                "createdBy",
+                "name"
+            ],
+            "properties": {
+                "createdBy": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
+                }
+            }
+        },
+        "service.UpdateArticleRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "modifiedBy",
+                "tagID"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "coverImageUrl": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "modifiedBy": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
+                },
+                "tagID": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.UpdateTagRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "modifiedBy",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "modifiedBy": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
                 }
             }
         }
