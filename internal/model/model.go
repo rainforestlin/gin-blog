@@ -40,8 +40,11 @@ func NewDBEngine(databaseSetting *setting.DatabaseSetting) (*gorm.DB, error) {
 		)
 		// gorm v2版本的大改动
 		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+			// 命名政策
 			NamingStrategy: schema.NamingStrategy{
-				TablePrefix:   databaseSetting.TablePrefix,
+				// 表明前缀
+				TablePrefix: databaseSetting.TablePrefix,
+				// 使用单数表名
 				SingularTable: false,
 			},
 		})
