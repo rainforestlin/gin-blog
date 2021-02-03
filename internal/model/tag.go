@@ -36,12 +36,12 @@ func (t Tag) Count(db *gorm.DB) (int64, error) {
 	return count, nil
 }
 
-func (t Tag) Get(db *gorm.DB) (*Tag, error) {
-	var tag *Tag
-	err := db.Where("id = ? AND state = ? AND is_del = ?", t.ID, t.State, 0).First(&tag).Error
+func (t Tag) Get(db *gorm.DB) (Tag, error) {
+	var tag Tag
+	err := db.Where(" id = ? AND state = ? AND is_del = ?", t.ID, t.State, 0).First(&tag).Error
 	if err != nil {
 		global.Logger.Error("model.Tag.Get err:", t.ID, t.State)
-		return &Tag{}, err
+		return Tag{}, err
 	}
 	return tag, nil
 }

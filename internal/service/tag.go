@@ -12,7 +12,7 @@ type CountTagRequest struct {
 
 type GetTagRequest struct {
 	ID    uint32 `form:"id" binding:"required,gte=1"`
-	State uint8  `form:"state,defalut=1" binding:"oneof=0 1"`
+	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
 }
 
 type TagListRequest struct {
@@ -43,7 +43,7 @@ func (svc *Service) CountTag(param *CountTagRequest) (int64, error) {
 }
 
 // 获取单个tag
-func (svc *Service) GetSingleTag(param *GetTagRequest) (*model.Tag, error) {
+func (svc *Service) GetSingleTag(param *GetTagRequest) (model.Tag, error) {
 	return svc.dao.GetTag(param.ID, param.State)
 }
 

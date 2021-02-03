@@ -74,7 +74,7 @@ func (svc *Service) GetArticle(param *ArticleRequest) (*Article, error) {
 		Content:       article.Content,
 		CoverImageUrl: article.CoverImageUrl,
 		State:         article.State,
-		Tag:           tag,
+		Tag:           &tag,
 	}, nil
 }
 

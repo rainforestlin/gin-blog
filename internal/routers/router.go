@@ -3,6 +3,8 @@ package routers
 import (
 	"net/http"
 
+	"github.com/julianlee107/blogWithGin/global"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/julianlee107/blogWithGin/docs"
 	v1 "github.com/julianlee107/blogWithGin/internal/routers/api/v1"
@@ -28,8 +30,12 @@ func NewRouter() *gin.Engine {
 
 	upload := NewUpload()
 	r.POST("/upload/file", upload.UploadFile)
+	// 文件服务
+	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 
+	r.GET("/auth", GetAuth)
 	apiv1 := r.Group("/api/v1")
+	apiv1.Use(middleware.JWT())
 	{
 		tag := v1.NewTag()
 		article := v1.NewArticle()
