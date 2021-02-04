@@ -25,12 +25,10 @@ func Translations() gin.HandlerFunc {
 			switch locale {
 			case "zh":
 				_ = zh_translations.RegisterDefaultTranslations(v, trans)
-				break
 			case "en":
 				_ = en_translations.RegisterDefaultTranslations(v, trans)
 			default:
 				_ = zh_translations.RegisterDefaultTranslations(v, trans)
-				break
 			}
 			c.Set("trans", trans)
 		}
