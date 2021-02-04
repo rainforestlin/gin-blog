@@ -1,4 +1,4 @@
-package routers
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -45,7 +45,7 @@ func (u Upload) UploadFile(c *gin.Context) {
 	fileInfo, err := svc.UploadFile(upload.FileType(fileType), file, fileHeader)
 
 	if err != nil {
-		global.Logger.Error("svc.UploadFile err:", err)
+		global.Logger.Error(c, "svc.UploadFile err:", err)
 		errResp := errcode.ErrorUploadFileFail.WithDetails(err.Error())
 		response.ToErrorResponse(errResp)
 		return

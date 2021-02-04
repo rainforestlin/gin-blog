@@ -3,6 +3,8 @@ package routers
 import (
 	"net/http"
 
+	"github.com/julianlee107/blogWithGin/internal/routers/api"
+
 	"github.com/julianlee107/blogWithGin/global"
 
 	"github.com/gin-gonic/gin"
@@ -29,12 +31,12 @@ func NewRouter() *gin.Engine {
 	})
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	upload := NewUpload()
+	upload := api.NewUpload()
 	r.POST("/upload/file", upload.UploadFile)
 	// 文件服务
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 
-	r.GET("/auth", GetAuth)
+	r.GET("/auth", api.GetAuth)
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(middleware.JWT())
 	{

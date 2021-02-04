@@ -31,7 +31,7 @@ func (t Tag) Get(c *gin.Context) {
 
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Error("app.BindAndValid err: ", errs)
+		global.Logger.Error(c, "app.BindAndValid err: ", errs)
 		errResp := errcode.InvalidParams.WithDetails(errs.Errors()...)
 		response.ToErrorResponse(errResp)
 		return
@@ -41,7 +41,7 @@ func (t Tag) Get(c *gin.Context) {
 	tag, err := svc.GetSingleTag(&param)
 
 	if err != nil {
-		global.Logger.Error("svc.GetSingleTag err: ", errs)
+		global.Logger.Error(c, "svc.GetSingleTag err: ", errs)
 		response.ToErrorResponse(errcode.ErrorGetTagFail)
 		return
 	}
@@ -64,7 +64,7 @@ func (t Tag) List(c *gin.Context) {
 	valid, errs := app.BindAndValid(c, &param)
 
 	if !valid {
-		global.Logger.Error("app.BindAndValid err: ", errs)
+		global.Logger.Error(c, "app.BindAndValid err: ", errs)
 		errResp := errcode.InvalidParams.WithDetails(errs.Errors()...)
 		response.ToErrorResponse(errResp)
 		return
@@ -77,13 +77,13 @@ func (t Tag) List(c *gin.Context) {
 	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
 
 	if err != nil {
-		global.Logger.Error("app.CountTag err: ", errs)
+		global.Logger.Error(c, "app.CountTag err: ", errs)
 		response.ToErrorResponse(errcode.ErrorCountTagFail)
 		return
 	}
 	tags, err := svc.GetTagList(&param, &pager)
 	if err != nil {
-		global.Logger.Error("svc.GetTagList err: ", errs)
+		global.Logger.Error(c, "svc.GetTagList err: ", errs)
 		response.ToErrorResponse(errcode.ErrorGetTagListFail)
 		return
 	}
@@ -104,8 +104,8 @@ func (t Tag) Create(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Error("app.BindAndValid err: ", errs)
-		global.Logger.Debug("param:", param, " created_by:", c.PostForm("created_by"))
+		global.Logger.Error(c, "app.BindAndValid err: ", errs)
+		global.Logger.Debug(c, "param:", param, " created_by:", c.PostForm("created_by"))
 		errResp := errcode.InvalidParams.WithDetails(errs.Errors()...)
 		response.ToErrorResponse(errResp)
 		return
@@ -115,7 +115,7 @@ func (t Tag) Create(c *gin.Context) {
 	err := svc.CreateTag(&param)
 
 	if err != nil {
-		global.Logger.Error("svc.CreateTag err:", err)
+		global.Logger.Error(c, "svc.CreateTag err:", err)
 		response.ToErrorResponse(errcode.ErrorCreateTagFail)
 		return
 	}
@@ -125,7 +125,7 @@ func (t Tag) Create(c *gin.Context) {
 }
 
 // @Summary 更改标签
-// @Pruduce json
+// @Produce json
 // @Param id path int true "标签ID"
 // @Param tag body service.UpdateTagRequest true "标签"
 // @Success 200 {object} model.Tag "成功"
@@ -137,7 +137,7 @@ func (t Tag) Update(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Error("app.BindAndValid errs:", errs)
+		global.Logger.Error(c, "app.BindAndValid errs:", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
@@ -145,7 +145,7 @@ func (t Tag) Update(c *gin.Context) {
 	svc := service.New(c.Request.Context())
 	err := svc.UpdateTag(&param)
 	if err != nil {
-		global.Logger.Error("svc.UpdateTag err: ", err)
+		global.Logger.Error(c, "svc.UpdateTag err: ", err)
 		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
 		return
 	}
@@ -160,4 +160,23 @@ func (t Tag) Update(c *gin.Context) {
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "请求错误"
 // @Router /api/v1/tags/{id} [delete]
-func (t Tag) Delete(c *gin.Context) {}
+func (t Tag) Delete(c *gin.Context) {
+	param := service.DeleteTagRequest{ID: convert.StrTo(c.Param("id")).MustUint32()}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.DeleteTag(&param)
+	if err != nil {
+		global.Logger.Errorf(c, "svc.DeleteTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorDeleteTagFail)
+		return
+	}
+
+	response.ToResponse(gin.H{})
+}
